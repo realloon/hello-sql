@@ -8,8 +8,12 @@ defineProps<{
 
 <template>
   <button :class="[rounded && 'rounded', icon && 'icon']">
-    <slot />
-    <span v-if="label">{{ label }}</span>
+    <slot name="left" />
+
+    <slot>
+      <span v-if="label">{{ label }}</span>
+    </slot>
+
     <slot name="right" />
   </button>
 </template>
