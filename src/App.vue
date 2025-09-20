@@ -4,7 +4,7 @@ import { ref } from 'vue'
 // Hooks
 import { useSQLite } from '@/hooks/useSQLite'
 // Components
-import AppAside from './containers/AppAside.vue'
+import AppAside from './containers/AppAside/AppAside.vue'
 import SQLEditor from './components/SQLEditor.vue'
 import ResultTable from './components/ResultTable.vue'
 import Message from './components/Message.vue'

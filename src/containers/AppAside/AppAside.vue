@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import preSql from '@/assets/sql/TYSQL.sql?raw'
-//
+// Components
+import DatabaseStat from './components/DatabaseStat.vue'
+// Hooks
 import { useSQLite } from '@/hooks/useSQLite'
 
 const { isReady, exec, onReady } = useSQLite()
@@ -10,7 +12,10 @@ onReady(() => exec(preSql))
 
 <template>
   <aside>
-    <h1>Hello SQL {{ isReady ? '✅' : '⏳' }}</h1>
+    <hgroup>
+      <h1>Hello SQL</h1>
+      <DatabaseStat style="transform: translateY(0.05em)" :isReady="isReady" />
+    </hgroup>
 
     <section class="pre-execute">
       <h2>Pre Execute</h2>
@@ -34,8 +39,15 @@ aside {
   background-color: var(--color-aside);
 }
 
-h1 {
-  font-size: 1.25rem;
+hgroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  h1 {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
 }
 
 .pre-execute {
