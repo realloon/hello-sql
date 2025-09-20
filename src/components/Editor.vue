@@ -12,7 +12,7 @@ textarea {
   font-size: 14px;
 
   color: var(--color-font);
-  background-color: #1f1f1f;
+  background-color: var(--color-editor);
 
   padding: 0.75em;
   border: 1px solid var(--color-border);

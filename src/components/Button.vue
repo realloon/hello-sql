@@ -19,11 +19,11 @@ button {
   
   font-size: 1rem;
   color: var(--color-font);
-  background-color: #323232;
+  background-color: var(--color-button);
 
   height: 36px;
   padding-inline: 12px;
-  border: 1px solid #3e3e3e;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
 
   cursor: pointer;

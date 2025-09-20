@@ -1,8 +1,8 @@
-:root {
-  --color-font: #e2e2e5;
-  --color-page: #191919;
-  --color-border: #2a2a2a;
+@import './normalize.css';
+@import './variables.css';
 
+:root {
+  color-scheme: light dark;
   --mono: 'Monaco', monospace;
 }
 
@@ -18,16 +18,4 @@ body {
 #app {
   display: flex;
   align-items: flex-start;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
-  font-size: 1rem;
-  font-weight: normal;
-  margin-block: unset;
 }
