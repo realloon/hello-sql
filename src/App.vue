@@ -1,51 +1,14 @@
 <script setup lang="ts">
-//
-import { ref } from 'vue'
-// Hooks
-import { useSQLite } from '@/hooks/useSQLite'
-// Components
-import AppAside from './containers/AppAside/AppAside.vue'
-import SQLEditor from './components/SQLEditor.vue'
-import Table from './components/Table.vue'
-import Message from './components/Message.vue'
-
-const { error, exec } = useSQLite()
-
-const sql = ref('SELECT * FROM Products;')
-
-const queryResult = ref<any>(null)
-const isLoading = ref(false)
-const componentError = ref<string | null>(null)
-
-async function hanldExec() {
-  isLoading.value = true
-  componentError.value = null
-  queryResult.value = null
-
-  try {
-    const result = await exec(sql.value)
-    queryResult.value = result
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      componentError.value = error.message
-    } else {
-      throw error
-    }
-  } finally {
-    isLoading.value = false
-  }
-}
+// Compoents
+import Aside from './containers/Aside/Aside.vue'
+import Playground from './containers/Playground/Playground.vue'
 </script>
 
 <template>
-  <AppAside />
+  <Aside />
 
   <main>
-    <SQLEditor v-model="sql" :handle="hanldExec" :disabled="isLoading" />
-
-    <Table :query-result="queryResult" />
-
-    <Message :message="componentError ?? error" />
+    <Playground />
   </main>
 </template>
 

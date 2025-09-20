@@ -1,15 +1,14 @@
-import type { PromiseCallbacks, WorkerMessage } from '@/types'
+import type { WorkerMessage, SqliteVersion, ExecResult } from '@/types'
 import { ref, onMounted, onUnmounted, readonly } from 'vue'
 
 let worker: Worker | null = null
-let requestId = 0
-
-const pendingPromises = new Map<number, PromiseCallbacks>()
-const onReadyCallbacks: (() => Promise<void>)[] = []
+const onReadyCallbacks: (() => void)[] = []
+const activeHookCount = ref(0)
 
 const isReady = ref(false)
 const error = ref<string | null>(null)
-const activeHookCount = ref(0)
+const result = ref<ExecResult>([])
+const version = ref<SqliteVersion | null>(null)
 
 function init() {
   if (worker) return
@@ -18,26 +17,29 @@ function init() {
     type: 'module',
   })
 
-  worker.onmessage = (e: MessageEvent<WorkerMessage>) => {
-    const { type, message, results, id } = e.data
+  worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
+    const { data } = event
+    error.value = null
 
-    if (type === 'ready') {
-      isReady.value = true
-      onReadyCallbacks.forEach(async callback => await callback())
-      onReadyCallbacks.length = 0
-      return
-    }
+    switch (data.type) {
+      case 'ready':
+        isReady.value = true
+        worker?.postMessage({ type: 'get_version' })
+        onReadyCallbacks.forEach(callback => callback())
+        onReadyCallbacks.length = 0
+        break
 
-    if (id && pendingPromises.has(id)) {
-      const promise = pendingPromises.get(id)!
-      if (type === 'result') {
-        promise.resolve(results)
-      } else if (type === 'error') {
-        promise.reject(new Error(message))
-      }
-      pendingPromises.delete(id)
-    } else if (type === 'error') {
-      error.value = message ?? 'An unknown worker error occurred.'
+      case 'version_result':
+        version.value = data.results
+        break
+
+      case 'exec_result':
+        result.value = data.results
+        break
+
+      case 'error':
+        error.value = data.message
+        break
     }
   }
 
@@ -50,38 +52,31 @@ function init() {
 function uninit() {
   if (!worker) return
 
-  for (const promise of pendingPromises.values()) {
-    promise.reject(new Error('SQLite Worker was terminated.'))
-  }
-
   worker.terminate()
-
   // reset stats
   worker = null
   isReady.value = false
-  pendingPromises.clear()
+  result.value = []
+  version.value = null
   onReadyCallbacks.length = 0
-  requestId = 0
 }
 
-async function onReady(callback: () => Promise<void>) {
+function onReady(callback: () => void) {
   if (isReady.value) {
-    await callback()
+    callback()
   } else {
     onReadyCallbacks.push(callback)
   }
 }
 
-async function exec(sql: string): Promise<any> {
+function exec(sql: string) {
   if (worker === null || !isReady.value) {
-    throw new Error('Worker is not ready to execute query.')
+    error.value = 'Worker is not ready to execute query.'
+    return
   }
 
-  return new Promise((resolve, reject) => {
-    const id = ++requestId
-    pendingPromises.set(id, { resolve, reject })
-    worker?.postMessage({ type: 'exec', sql, id })
-  })
+  result.value = []
+  worker.postMessage({ type: 'exec', sql })
 }
 
 export function useSQLite() {
@@ -103,6 +98,8 @@ export function useSQLite() {
 
   return {
     isReady: readonly(isReady),
+    version: readonly(version),
+    result: readonly(result),
     error: readonly(error),
     exec,
     onReady,

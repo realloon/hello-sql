@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import Editor from './Editor.vue'
-import Button from './Button.vue'
-import Run from './icons/Run.vue'
+import Editor from '@/components/Editor.vue'
 
 defineProps<{
-  disabled: boolean
-  handle: () => Promise<void>
+  disabled?: boolean
+  handleExec: () => void
+  handleClear?: () => void
 }>()
 
 const model = defineModel<string>({ required: true })
@@ -14,10 +13,6 @@ const model = defineModel<string>({ required: true })
 <template>
   <section class="sql-editor">
     <Editor v-model="model" />
-
-    <footer>
-      <Button @click="handle" :disabled="disabled" label="Execute" />
-    </footer>
   </section>
 </template>
 

@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import preSql from '@/assets/sql/TYSQL.sql?raw'
+import { ref } from 'vue'
 // Components
+import Select from '@/components/Select.vue'
 import DatabaseStat from './components/DatabaseStat.vue'
+import SQLiteInfo from './components/SQLiteInfo.vue'
+import Details from '@/components/Details.vue'
 // Hooks
 import { useSQLite } from '@/hooks/useSQLite'
 
-const { isReady, exec, onReady } = useSQLite()
+const { version, isReady, exec, onReady } = useSQLite()
 
-onReady(() => exec(preSql))
+const preExecuteOptions = ['TYSQL', 'Custom']
+const preExecute = ref(preExecuteOptions[0])
+
+onReady(async () => exec(preSql))
 </script>
 
 <template>
@@ -17,10 +24,11 @@ onReady(() => exec(preSql))
       <DatabaseStat style="transform: translateY(0.05em)" :isReady="isReady" />
     </hgroup>
 
-    <section class="pre-execute">
-      <h2>Pre Execute</h2>
-      <p>TYSQL</p>
-    </section>
+    <SQLiteInfo :version="version" />
+
+    <Details title="Pre Execute">
+      <Select v-model="preExecute" :items="preExecuteOptions" />
+    </Details>
   </aside>
 </template>
 
@@ -34,7 +42,7 @@ aside {
   flex-shrink: 0;
   flex-basis: 14rem;
   height: 100vh;
-  padding: 16px;
+  padding: 24px;
   border-right: 1px solid var(--color-border);
   background-color: var(--color-aside);
 }
@@ -47,13 +55,6 @@ hgroup {
   h1 {
     font-size: 1.25rem;
     font-weight: bold;
-  }
-}
-
-.pre-execute {
-  p {
-    font-size: 0.875rem;
-    font-family: var(--mono);
   }
 }
 </style>

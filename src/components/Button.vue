@@ -1,13 +1,15 @@
 <script setup lang="ts">
 defineProps<{
-  label: string
+  label?: string
+  icon?: boolean
+  rounded?: boolean
 }>()
 </script>
 
 <template>
-  <button>
+  <button :class="[rounded && 'rounded', icon && 'icon']">
     <slot />
-    <span>{{ label }}</span>
+    <span v-if="label">{{ label }}</span>
     <slot name="right" />
   </button>
 </template>
@@ -16,12 +18,12 @@ defineProps<{
 button {
   display: flex;
   align-items: center;
-  
+
   font-size: 1rem;
   color: var(--color-font);
   background-color: var(--color-button);
 
-  height: 36px;
+  height: 32px;
   padding-inline: 12px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
@@ -31,6 +33,16 @@ button {
 
   &:hover {
     opacity: 0.8;
+  }
+}
+
+button.rounded {
+  border-radius: 50%;
+
+  &.icon {
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    padding: 0;
   }
 }
 
