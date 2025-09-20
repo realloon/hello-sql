@@ -79,6 +79,10 @@ function exec(sql: string) {
   worker.postMessage({ type: 'exec', sql })
 }
 
+function clear() {
+  result.value = []
+}
+
 export function useSQLite() {
   onMounted(() => {
     if (activeHookCount.value === 0) {
@@ -101,7 +105,8 @@ export function useSQLite() {
     version: readonly(version),
     result: readonly(result),
     error: readonly(error),
-    exec,
     onReady,
+    exec,
+    clear,
   }
 }

@@ -11,7 +11,7 @@ import Table from './components/Table.vue'
 import Button from '@/components/Button.vue'
 import Clear from '@/components/icons/Clear.vue'
 
-const { result, error, exec } = useSQLite()
+const { result, error, exec, clear } = useSQLite()
 
 const sql = ref('SELECT * FROM Products;')
 
@@ -36,7 +36,7 @@ onMounted(() => {
     <section class="btns">
       <Button @click="() => exec(sql)" label="Execute" />
 
-      <Button v-show="!isEmpty(result)" @click="() => exec(' ')" icon rounded>
+      <Button v-show="!isEmpty(result)" @click="clear" icon rounded>
         <Clear />
       </Button>
     </section>
