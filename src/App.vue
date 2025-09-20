@@ -6,7 +6,7 @@ import { useSQLite } from '@/hooks/useSQLite'
 // Components
 import AppAside from './containers/AppAside/AppAside.vue'
 import SQLEditor from './components/SQLEditor.vue'
-import ResultTable from './components/ResultTable.vue'
+import Table from './components/Table.vue'
 import Message from './components/Message.vue'
 
 const { error, exec } = useSQLite()
@@ -43,7 +43,7 @@ async function hanldExec() {
   <main>
     <SQLEditor v-model="sql" :handle="hanldExec" :disabled="isLoading" />
 
-    <ResultTable :query-result="queryResult" />
+    <Table :query-result="queryResult" />
 
     <Message :message="componentError ?? error" />
   </main>

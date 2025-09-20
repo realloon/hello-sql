@@ -16,7 +16,9 @@ const headers = computed(() => {
     <table>
       <thead>
         <tr>
-          <th v-for="header in headers" scope="col">{{ header }}</th>
+          <th class="header" v-for="header in headers" scope="col">
+            {{ header }}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -35,18 +37,10 @@ table {
   font-size: 14px;
   font-family: var(--mono);
 
-  /* table-layout: fixed; */
-  border-spacing: 2em 0.75em;
-  margin-inline-start: -2em;
-}
+  border-collapse: collapse;
+  table-layout: fixed;
 
-th {
-  text-align: left;
-}
-
-thead > tr > th {
-  padding-bottom: 0.75em;
-  border-bottom: 2px dashed var(--color-font);
+  /* text-wrap-mode: nowrap; */
 }
 
 th,
@@ -54,7 +48,17 @@ td {
   padding: 0;
 }
 
-tr:hover td {
-  color: brown;
+th {
+  text-align: left;
+}
+
+tr > th,
+tr > td {
+  border-right: 2em solid transparent;
+}
+
+.header {
+  /* padding-bottom: 0.75em; */
+  border-bottom: 2px dashed var(--color-font);
 }
 </style>
