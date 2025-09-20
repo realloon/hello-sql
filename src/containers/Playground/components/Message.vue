@@ -15,7 +15,7 @@ defineProps<{ message?: string | null }>()
 
 pre {
   padding: 8px;
-  border: 2px solid #efefef;
+  border: 2px solid var(--color-border);
   border-radius: 4px;
 }
 </style>
