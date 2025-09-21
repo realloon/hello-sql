@@ -1,27 +1,35 @@
 <script setup lang="ts">
 import type { ExecResult } from '@/types'
-import { computed } from 'vue'
+import { useTemplateRef, computed, onMounted } from 'vue'
 import { isObejct } from '@/utils'
 
-const { queryResult: data, width } = defineProps<{
+const { queryResult: data } = defineProps<{
   queryResult: Readonly<ExecResult>
-  width: number
 }>()
+
+const wrapper = useTemplateRef('wrapper')
 
 const headers = computed(() => {
   if (!isObejct(data[0])) return []
 
   return Object.keys(data[0])
 })
+
+onMounted(() => {
+  if (!wrapper.value) return
+
+  const width = wrapper.value.getBoundingClientRect().width
+  wrapper.value.style.width = `${width}px`
+})
 </script>
 
 <template>
-  <section :style="`width: ${width}px`">
+  <section ref="wrapper">
     <table>
       <thead>
         <tr>
-          <th class="header" v-for="header in headers" scope="col">
-            {{ header }}
+          <th v-for="header in headers" scope="col">
+            <span class="header">{{ header }}</span>
           </th>
         </tr>
       </thead>
@@ -38,46 +46,45 @@ const headers = computed(() => {
 
 <style scoped>
 section {
-  overflow: overlay hidden;
+  height: calc(100vh - 186px);
+
+  overflow: overlay;
   scrollbar-width: thin;
 }
 
 table {
   font-size: 14px;
   font-family: var(--mono);
+  white-space: nowrap;
 
   border-collapse: collapse;
   table-layout: fixed;
 }
 
-thead th {
-  padding-bottom: 1em;
-  border-bottom: 2px dashed var(--color-font);
+thead {
+  .header {
+    display: block;
+    padding-bottom: 0.75em;
+    border-bottom: 2px dashed var(--color-font);
+  }
 }
 
 tbody {
-  white-space: nowrap;
+  border-top: 0.5em solid transparent;
 
-  tr:first-of-type td {
-    padding-top: 1em;
-  }
-
-  tr {
-    border-bottom: 1em solid transparent;
+  td {
+    padding-block: 0.25em;
   }
 }
 
+th,
 td {
-  padding: 0;
-}
-
-th {
-  padding: 0;
   text-align: left;
+  padding: 0 2em 0 0;
 }
 
-tr > th:not(:last-of-type),
-tr > td:not(:last-of-type) {
-  border-right: 2em solid transparent;
+tr th:last-of-type,
+tr td:last-of-type {
+  padding: 0;
 }
 </style>
