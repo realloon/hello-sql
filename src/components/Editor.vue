@@ -3,7 +3,7 @@ const model = defineModel<string>({ required: true })
 </script>
 
 <template>
-  <textarea v-model="model" name="sql" rows="4" />
+  <textarea v-model="model" name="sql" rows="4" :spellcheck="false" />
 </template>
 
 <style scoped>
