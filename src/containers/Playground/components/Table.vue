@@ -85,6 +85,6 @@ td {
 
 tr th:last-of-type,
 tr td:last-of-type {
-  padding: 0;
+  padding-right: 0;
 }
 </style>
