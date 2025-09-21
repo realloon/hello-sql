@@ -1,9 +1,15 @@
 import type { WorkerMessage, SqliteVersion, ExecResult } from '@/types'
-import { ref, onMounted, onUnmounted, readonly } from 'vue'
+import { ref, computed, onMounted, onUnmounted, readonly } from 'vue'
 
 let worker: Worker | null = null
 const onReadyCallbacks: (() => void)[] = []
 const activeHookCount = ref(0)
+
+let startAt = ref(0)
+let endAt = ref(0)
+const timer = computed(() =>
+  (Math.round((endAt.value - startAt.value) * 10) / 10).toFixed(1)
+)
 
 const isReady = ref(false)
 const error = ref<string | null>(null)
@@ -34,6 +40,8 @@ function init() {
         break
 
       case 'exec_result':
+        endAt.value = performance.now()
+
         result.value = data.results
         break
 
@@ -75,8 +83,9 @@ function exec(sql: string) {
     return
   }
 
-  result.value = []
   worker.postMessage({ type: 'exec', sql })
+
+  startAt.value = performance.now()
 }
 
 function clear() {
@@ -105,6 +114,7 @@ export function useSQLite() {
     version: readonly(version),
     result: readonly(result),
     error: readonly(error),
+    timer: readonly(timer),
     onReady,
     exec,
     clear,

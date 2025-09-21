@@ -10,8 +10,9 @@ import Table from './components/Table.vue'
 import Button from '@/components/Button.vue'
 import Clear from '@/components/icons/Clear.vue'
 import Editor from '@/components/Editor.vue'
+import Spacer from '@/components/Spacer.vue'
 
-const { result, error, exec, clear } = useSQLite()
+const { result, error, timer, exec, clear } = useSQLite()
 
 const sql = ref('SELECT * FROM Products;')
 </script>
@@ -26,6 +27,10 @@ const sql = ref('SELECT * FROM Products;')
       <Button v-show="!isEmpty(result)" @click="clear" icon rounded>
         <Clear />
       </Button>
+
+      <Spacer />
+
+      <span class="counter">{{ result.length }} rows in {{ timer }} ms</span>
     </section>
 
     <Table class="display-result" v-show="result" :query-result="result" />
@@ -45,6 +50,11 @@ const sql = ref('SELECT * FROM Products;')
   display: flex;
   align-items: center;
   gap: 8px;
+
+  .counter {
+    font-family: var(--mono);
+    opacity: 0.7;
+  }
 
   button:last-of-type {
     color: var(--color-page);

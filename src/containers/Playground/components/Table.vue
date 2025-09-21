@@ -46,7 +46,7 @@ onMounted(() => {
 
 <style scoped>
 section {
-  height: calc(100vh - 186px);
+  max-height: calc(100vh - 192px);
 
   overflow: overlay;
   scrollbar-width: thin;
